@@ -1,17 +1,16 @@
-function[y,err,it]=JACOBIANO(A,b,maxiter,epsilon)
+function[y,err,it]=JACOBIANO(A,b,epsilon)
 % y es vector solución
 % err es el error final
 % it es el numero de iteraciones final
 % A matriz del sistema
 % b vector del sistema
-% maxiter es numero máximo de iteraciones
 % epsilon es la cota del error
 n=length(b);
 it=0;
 err=2*epsilon;
 x=zeros(1,n);
 y=zeros(1,n);
-while it<maxiter & err>epsilon
+while err>epsilon
     for i=1:n
         S=0;
        for j=1:n;
@@ -28,3 +27,10 @@ end
 y
 it
 err
+
+prompt = 'Desea calcularlo con Gauss Seidel? Y/N [Y]: ';
+x = input(prompt,'s');
+switch x
+    case 'y'
+        GaussSeidel(A,b,epsilon);
+end
