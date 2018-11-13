@@ -1,0 +1,38 @@
+Funcionalidades:
+
+Validar, a través de los metodos de Jacobi y Gauss Seidel, si la matriz de coeficientes es dominante diagonalemente o estrictamente dominante diagonalmente.
+
+	Informar los resultados, y en caso de no haber sino dominante diagonalmente, brindar la posibilidad de modificar, para conseguir dicha característica.
+
+Obtener la Norma 1, Norma 2 y Norma infinito de la matriz de coeficientes.
+
+Al seleccionar el método se obtendra el detalle de los pasos utilizados, junto a la solucion del mismo.
+
+
+El usuario PODRÁ:
+	SELECCIONAR otro metodo para resolver el mismo sitema,
+	INGRESAR un nuevo sistema,
+	SALIR de la aplicación.
+
+
+
+INGRESAR DATOS: propuesta: boton en inicio que abra otra vista para cargarlos, luego en la vista principal mostrar una visualizacion de la misma.
+
+SELECCIONAR MÉTODO PARA RESOLUCIÓN:
+	Luego de seleccionar el método, tendrá que solicitar al usuario que ingrese:
+		*	Vector Incial
+		*	Cantidad de decimales
+		*	Cota de error
+
+	Se visualizará:
+		*	La tabla con todos los cálculos realizados
+		*	El criterio de paro utilizado
+		* 	El conjunto de valores que satisface el sistema
+
+SELECCIONAR OTRO MÉTODO:
+	Luego de concretar un método, dar la posibilidad de elegir resolver el sistema por otro método distinto al seleccinado originalmente.
+
+FINALIZAR:
+	El usuario podrá TERMINAR con todas las operaciones que estaba realizando para:
+		*	Dar origen a un nuevo set de datos
+		*	Salir del programa.
