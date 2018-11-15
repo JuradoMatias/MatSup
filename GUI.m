@@ -183,40 +183,38 @@ delete(handles.figure1)
 
 % --- Executes on button press in resolver.
 function resolver_Callback(hObject, eventdata, handles)
-
+    
+    
     f = cell2mat(get(handles.valoresF,'Data'));
-    k = cell2mat(get(handles.valoresK,'Data'));
+    k = get(handles.valoresK,'Data');
     
     
     MK = length(k);
     for i=1:MK
-    %validar que no haya valores negativos
+   
         for j=1:MK
-            if k(i,j) < 0
-                errordlg('Debes ingresar valores positivos','Bad Input',modal)
-            end
         %validando tipo de datos
-%             if isnan(k(i,j))
-%                 errordlg('Ingresa un valor numérico','Bad Input','modal')
-%             end
+             if isnan(k(i,j))
+                 errordlg('Ingresa un valor numérico','Bad Input','modal')
+            end
         %Validando si es un número real
             esReal = isreal(k(i,j));
             if esReal == 0
                 errordlg('Ingresa un valor real','Bad Input','modal');
             end
         %Checkear que todos los valores no sean cero
-%             if mean(k(i,j)) == 0
-%                 errordlg('Todos los valores no deben ser 0','Bad Input','modal');
-%             end
+             if mean(k(i,j)) == 0
+                 errordlg('Todos los valores no deben ser 0','Bad Input','modal');
+             end
         end
     end
 
     MF = length(f);
     for i=1:MF
     %validando tipo de datos
-%         if isnan(f(i,1))
-%             errordlg('Ingresa un valor numérico','Bad Input','modal')
-%         end
+         if isnan(f(i,1))
+             errordlg('Ingresa un valor numérico','Bad Input','modal')
+         end
     %Validando si es un número real
         esReal = isreal(f(i,1));
         if esReal == 0
@@ -235,7 +233,7 @@ function resolver_Callback(hObject, eventdata, handles)
         C = abs(k(i,j));
         restaFila(i) = abs(k(i,i)) - sum(C); 
         if restaFila(i) < 0
-            fprintf('La matriz no es diagonalmente dominante en la fila %2i\n\n',i)
+            errordlg('La matriz no es diagonalmente dominante','Bad Input','modal');
             return
         end
     end
@@ -247,7 +245,7 @@ function resolver_Callback(hObject, eventdata, handles)
 %     set(handles.unitable4,'Data',x,'ColumnFormat',{'long'})
 %     set(handles.unitable5,'Data',b,'ColumnFormat',{'short'})
 %     set(handles.unitable6,'Data',Xe,'ColumnFormat',{'long'})
-    set(handles.unitable7,'Data',error,'ColumnFormat',{'long'})
+    set(handles.uitable7,'Data',error,'ColumnFormat',{'long'})
 %     set(handles.unitable8,'Data',NOSD,'ColumnFormat',{'short'})
 
 

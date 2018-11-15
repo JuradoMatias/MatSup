@@ -28,9 +28,3 @@ y
 it
 err
 
-prompt = 'Desea calcularlo con Gauss Seidel? Y/N [Y]: ';
-x = input(prompt,'s');
-switch x
-    case 'y'
-        GaussSeidel(A,b,epsilon);
-end

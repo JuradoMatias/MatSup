@@ -26,10 +26,3 @@ end
 tabla = [1:it;y]'
 it
 error = max(err)
-
-prompt = 'Desea calcularlo con Jacobi? Y/N [Y]: ';
-x = input(prompt,'s');
-switch x
-    case 'y'
-        JACOBIANO(A,B,epsilon);
-end
