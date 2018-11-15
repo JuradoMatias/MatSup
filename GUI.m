@@ -73,8 +73,9 @@ function varargout = GUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-
+% Recibe el orden del sistema
 function orden_Callback(hObject, eventdata, handles)
+% Poner restriccion para que se permite solo numerico
 N = str2double(get(hObject,'String'));
 handles.orden = N;
 guidata(hObject,handles);
@@ -96,13 +97,17 @@ end
 % --- Executes on button press in aplicar.
 function aplicar_Callback(hObject, eventdata, handles)
 Ncolumns = handles.orden;
-Nrows=1;
+%porque es 1.
+Nrows = handles.orden;
 
-if Ncolumns < 3
-    errordlg('El orden mínimo permitido es 3','Bad Input','modal')
+%minimo 3?
+if Ncolumns < 2
+    errordlg('El orden mínimo permitido es 2','Atención','modal')
 else
-    set(handles.valoresK,'Data',cell(Nrows,Ncolumns))
-    set(handles.valoresF,'Data',cell(Nrows,3))
+    %Ver las cantidad de columnas ( tienen que ser de igual orden?)
+    set(handles.valoresK,'Data',zeros(handles.orden))
+    set(handles.valoresF,'Data',cell(Nrows,1))
+    %set(handles.valoresF,'Data',cell(Nrows,3))
 end
 
 
@@ -178,101 +183,86 @@ delete(handles.figure1)
 
 % --- Executes on button press in resolver.
 function resolver_Callback(hObject, eventdata, handles)
-    k = handles.k;
-    f = handles.f;
+
+    f = cell2mat(get(handles.valoresF,'Data'));
+    k = cell2mat(get(handles.valoresK,'Data'));
+    
+    
+    MK = length(k);
+    for i=1:MK
+    %validar que no haya valores negativos
+        for j=1:MK
+            if k(i,j) < 0
+                errordlg('Debes ingresar valores positivos','Bad Input',modal)
+            end
+        %validando tipo de datos
+%             if isnan(k(i,j))
+%                 errordlg('Ingresa un valor numérico','Bad Input','modal')
+%             end
+        %Validando si es un número real
+            esReal = isreal(k(i,j));
+            if esReal == 0
+                errordlg('Ingresa un valor real','Bad Input','modal');
+            end
+        %Checkear que todos los valores no sean cero
+%             if mean(k(i,j)) == 0
+%                 errordlg('Todos los valores no deben ser 0','Bad Input','modal');
+%             end
+        end
+    end
+
+    MF = length(f);
+    for i=1:MF
+    %validando tipo de datos
+%         if isnan(f(i,1))
+%             errordlg('Ingresa un valor numérico','Bad Input','modal')
+%         end
+    %Validando si es un número real
+        esReal = isreal(f(i,1));
+        if esReal == 0
+            errordlg('Ingresa un valor real','Bad Input','modal');
+        end
+    end
+
     Tolerancia = handles.Tolerancia;
-    NInicial = 1000; %Numero inicial de iteraciones
+%   NInicial = 15; %Numero inicial de iteraciones
+    
+    n = length(f);
 
-    A = MatrixK(k)
-    b = VectorB(f,A)
-    n = length(k);
-    xo = zeros(n,1);
-
-    for k = 1:NInicial
-        for i = i:n
-            %Realizando la primer suma con el método Gauss-Seidel
-            T = i-1;
-            if T >= 1 a1=zeros(1,i);
-                for j = 1:i-1 a1(i) = a1(i) + A(i,j)*x(j); end
-            else a1(i)=0;
-            end
-            %Realizando la segunda suma con el método Gauss-Seidel
-            a2 = zeros(1,i);
-            for j = i+1:n a2(i) = a2(i) + A(i,j)*xo(j); end
-            x(i) = (1/A(i,i))*(b(i) - a1(i) - a2(i));
-        end
-
-        ErrorT = abs(max(xo-o));
-        xo = x;
-        if ErrorT <= Tolerancia break
+    for i = 1:n
+        j = 1:n;
+        j(i) = [];
+        C = abs(k(i,j));
+        restaFila(i) = abs(k(i,i)) - sum(C); 
+        if restaFila(i) < 0
+            fprintf('La matriz no es diagonalmente dominante en la fila %2i\n\n',i)
+            return
         end
     end
+
+    [tabla,iteraciones,error] = GaussSeidel(k,f,Tolerancia);
+    b = VectorB(f,tabla);
     
-    if det(A) == 0
-        errordlg('La matriz es singular','Bad Input','modal')
-    end
-    
-    Xe = inv(A) * b'
-    
-    for i = 1:length(Xe)
-        RErrorT(i) = (Xe(i) - x(i)/Xe);
-    end
-    RErrorT'
-    
-    for i = 1:length(Xe)
-        RError(i) = (Xe(i) - x(i)/Xe(i));
-        for j = 1:20
-            Cond = ((10^(i-j))/2);
-            if RErrorT(i) > Cond
-                NOSD(i) = j-i; %numero de digitios significativos
-                break
-            end
-        end
-    end
-    
-    set(handles.matrizK,'Data',A,'ColumnFormat',{'long'})
-    set(handles.unitable4,'Data',x,'ColumnFormat',{'long'})
-    set(handles.unitable5,'Data',b,'ColumnFormat',{'short'})
-    set(handles.unitable6,'Data',Xe,'ColumnFormat',{'long'})
-    set(handles.unitable7,'Data',RErrorT,'ColumnFormat',{'long'})
-    set(handles.unitable8,'Data',NOSD,'ColumnFormat',{'short'})
-    
-    
-% hObject    handle to resolver (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+    set(handles.matrizK,'Data',tabla,'ColumnFormat',{'long'})
+%     set(handles.unitable4,'Data',x,'ColumnFormat',{'long'})
+%     set(handles.unitable5,'Data',b,'ColumnFormat',{'short'})
+%     set(handles.unitable6,'Data',Xe,'ColumnFormat',{'long'})
+    set(handles.unitable7,'Data',error,'ColumnFormat',{'long'})
+%     set(handles.unitable8,'Data',NOSD,'ColumnFormat',{'short'})
 
 
 % --- Executes when entered data in editable cell(s) in valoresK.
 function valoresK_CellEditCallback(hObject, eventdata, handles)
-clc
 set(handles.valoresK,'ColumnEditable',true(1,handles.orden))
-%seteanis ek formato de celdas
-set(handles.valoresK,'ColumnFormat',{'numeric'})
+%seteamos el formato de celdas
+set(handles.valoresK,'ColumnFormat',{'Numeric'})
 %obtenemos los valores ingresados en la tabla
-k = cell2mat(get(handles.valoresK,'Data'));
-MK = length(k);
-for i=1:MK
-%validar que no haya valores negativos
-    if k(i) < 0
-        errordlg('Debes ingresar valores positivos','Bad Input',modal)
-    end
-%validando tipo de datos
-    if isnan(k(i))
-        errordlg('Ingresa un valor numérico','Bad Input','modal')
-    end
-%Validando si es un número real
-    esReal = isreal(k(i));
-    if esReal == 0
-        errordlg('Ingresa un valor real','Bad Input','modal');
-    end
-%Checkear que todos los valores no sean cero
-    if mean(k) == 0
-        errordlg('Todos los valores no deben ser 0','Bad Input','modal');
-    end
-end
-    handles.k = k;
-    guidata(hObject,handles)
+
+
+% k = cell2mat(get(handles.valoresK,'Data'));
+% 
+%     handles.k = k;
+%     guidata(hObject,handles)
 
 
 % hObject    handle to valoresK (see GCBO)
@@ -288,26 +278,11 @@ end
 % --- Executes when entered data in editable cell(s) in valoresF.
 function valoresF_CellEditCallback(hObject, eventdata, handles)
 clc
-set(handles.valoresF,'ColumnEditable',true(1,3))
-%seteanis ek formato de celdas
-set(handles.valoresF,'ColumnFormat',{'numeric'})
+set(handles.valoresF,'ColumnEditable',true(1,handles.orden))
+%seteamos el formato de celdas
+set(handles.valoresF,'ColumnFormat',{'Numeric'})
 %obtenemos los valores ingresados en la tabla
-f = cell2mat(get(handles.valoresF,'data'));
-MF = length(k);
-for i=1:MF
-%validando tipo de datos
-    if isnan(k(i))
-        errordlg('Ingresa un valor numérico','Bad Input','modal')
-    end
-%Validando si es un número real
-    esReal = isreal(k(i));
-    if esReal == 0
-        errordlg('Ingresa un valor real','Bad Input','modal');
-    end
-end
-    handles.f = f;
-    guidata(hObject,handles)
-
+f = cell2mat(get(handles.valoresF,'Data'));
 
 
 % hObject    handle to valoresF (see GCBO)
