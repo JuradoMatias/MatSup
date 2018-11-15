@@ -106,10 +106,6 @@ function resolver_Callback(hObject, eventdata, handles)
             if esReal == 0
                 errordlg('Ingresa un valor real','Bad Input','modal');
             end
-        %Checkear que todos los valores no sean cero
-             if mean(k(i,j)) == 0
-                 errordlg('Todos los valores no deben ser 0','Bad Input','modal');
-             end
         end
     end
 
@@ -125,12 +121,9 @@ function resolver_Callback(hObject, eventdata, handles)
             errordlg('Ingresa un valor real','Bad Input','modal');
         end
     end
-
-    Tolerancia = handles.Tolerancia;
-%   NInicial = 15; %Numero inicial de iteraciones
     
     n = length(f);
-
+    
     for i = 1:n
         j = 1:n;
         j(i) = [];
@@ -141,14 +134,16 @@ function resolver_Callback(hObject, eventdata, handles)
             return
         end
     end
-
-    [tabla,iteraciones,error] = GaussSeidel(k,f,Tolerancia);
-    b = VectorB(f,tabla);
+    
+    Tolerancia = str2double(get(handles.tolerancia,'String'));
+    switch get(get(handles.uibuttongroup1,'SelectedObject'),'Tag')
+    case 'Jacobi'
+        [tabla,error,iteraciones] = JACOBIANO(k,f,Tolerancia);
+    otherwise
+        [tabla,iteraciones,error] = GaussSeidel(k,f,Tolerancia);
+    end
     
     set(handles.matrizK,'Data',tabla,'ColumnFormat',{'long'})
-%     set(handles.unitable4,'Data',x,'ColumnFormat',{'long'})
-%     set(handles.unitable5,'Data',b,'ColumnFormat',{'short'})
-%     set(handles.unitable6,'Data',Xe,'ColumnFormat',{'long'})
     set(handles.uitable7,'Data',error,'ColumnFormat',{'long'})
 %     set(handles.unitable8,'Data',NOSD,'ColumnFormat',{'short'})
 
