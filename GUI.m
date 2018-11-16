@@ -168,8 +168,20 @@ f = cell2mat(get(handles.valoresF,'Data'));
 
 
 function obtenernorma_Callback(hObject, eventdata, handles)
-% verificar que sea una matriz correcta
 k = get(handles.valoresK,'Data');
+
+
+    MK = length(k);
+    for i=1:MK
+   
+        for j=1:MK
+        %validando tipo de datos
+             if isnan(k(i,j))
+                 errordlg('Ingresa un valor numérico','Bad Input','modal')
+             end
+        end
+    end
+
 
 n1 = norm(k,1);
 n2 = norm(k,2); 
