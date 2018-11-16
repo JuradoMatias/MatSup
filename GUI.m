@@ -7,7 +7,8 @@ gui_State = struct('gui_Name',       mfilename, ...
                    'gui_OutputFcn',  @GUI_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
-if nargin && ischar(varargin{1})
+if nargin && ischar(varargin{1}) 
+    
     gui_State.gui_Callback = str2func(varargin{1});
 end
 
@@ -52,6 +53,7 @@ if Ncolumns < 2
 else
     set(handles.valoresK,'Data',zeros(handles.orden))
     set(handles.valoresF,'Data',cell(Nrows,1))
+    set(handles.obtenernorma,'Visible','on');
 end
 
 
@@ -162,3 +164,93 @@ set(handles.valoresF,'ColumnEditable',true(1,handles.orden))
 set(handles.valoresF,'ColumnFormat',{'Numeric'})
 %obtenemos los valores ingresados en la tabla
 f = cell2mat(get(handles.valoresF,'Data'));
+
+
+
+function obtenernorma_Callback(hObject, eventdata, handles)
+% verificar que sea una matriz correcta
+k = get(handles.valoresK,'Data');
+
+n1 = norm(k,1);
+n2 = norm(k,2); 
+ninf = norm(k,inf);
+
+set(handles.norm1,'Visible','on');
+set(handles.rtdonorm1, 'String', n1);
+set(handles.rtdonorm1,'Visible','on');
+
+set(handles.norm2,'Visible','on');
+set(handles.rtdonorm2, 'String', n2);
+set(handles.rtdonorm2,'Visible','on');
+
+set(handles.norminf,'Visible','on');
+set(handles.rtdonorminf, 'String', ninf);
+set(handles.rtdonorminf,'Visible','on');
+
+
+function rtdonorm1_Callback(hObject, eventdata, handles)
+% hObject    handle to rtdonorm1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of rtdonorm1 as text
+%        str2double(get(hObject,'String')) returns contents of rtdonorm1 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function rtdonorm1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rtdonorm1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function rtdonorm2_Callback(hObject, eventdata, handles)
+% hObject    handle to rtdonorm2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of rtdonorm2 as text
+%        str2double(get(hObject,'String')) returns contents of rtdonorm2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function rtdonorm2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rtdonorm2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function rtdonorminf_Callback(hObject, eventdata, handles)
+% hObject    handle to rtdonorminf (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of rtdonorminf as text
+%        str2double(get(hObject,'String')) returns contents of rtdonorminf as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function rtdonorminf_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rtdonorminf (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
