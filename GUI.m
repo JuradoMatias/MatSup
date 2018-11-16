@@ -53,6 +53,7 @@ if Ncolumns < 2
 else
     set(handles.valoresK,'Data',zeros(handles.orden))
     set(handles.valoresF,'Data',cell(Nrows,1))
+    set(handles.valoresIniciales,'Data',zeros(Nrows,1))
     set(handles.obtenernorma,'Visible','on');
 end
 
@@ -94,6 +95,7 @@ function resolver_Callback(hObject, eventdata, handles)
     
     f = cell2mat(get(handles.valoresF,'Data'));
     k = get(handles.valoresK,'Data');
+    inicial = get(handles.valoresIniciales,'Data');
     
     MK = length(k);
     for i=1:MK
@@ -124,8 +126,20 @@ function resolver_Callback(hObject, eventdata, handles)
         end
     end
     
-    n = length(f);
+    MI = length(inicial);
+    for i=1:MI
+    %validando tipo de datos
+         if isnan(inicial(i,1))
+             errordlg('Ingresa un valor numérico','Bad Input','modal')
+         end
+    %Validando si es un número real
+        esReal = isreal(inicial(i,1));
+        if esReal == 0
+            errordlg('Ingresa un valor real','Bad Input','modal');
+        end
+    end
     
+    n = length(f);
     for i = 1:n
         j = 1:n;
         j(i) = [];
@@ -140,9 +154,9 @@ function resolver_Callback(hObject, eventdata, handles)
     Tolerancia = str2double(get(handles.tolerancia,'String'));
     switch get(get(handles.uibuttongroup1,'SelectedObject'),'Tag')
     case 'Jacobi'
-        [tabla,error,iteraciones] = JACOBIANO(k,f,Tolerancia);
+        [tabla,error] = JACOBIANO(k,f,Tolerancia,inicial);
     otherwise
-        [tabla,iteraciones,error] = GaussSeidel(k,f,Tolerancia);
+        [tabla,error] = GaussSeidel(k,f,Tolerancia,inicial);
     end
     
     set(handles.matrizK,'Data',tabla,'ColumnFormat',{'long'})
@@ -183,7 +197,7 @@ k = get(handles.valoresK,'Data');
     end
 
 
-n1 = norm(k,1);
+n1 = norm(k,1); 
 n2 = norm(k,2); 
 ninf = norm(k,inf);
 

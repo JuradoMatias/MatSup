@@ -1,30 +1,29 @@
-function[y,err,it]=JACOBIANO(A,b,epsilon)
+function[tabla,error]=JACOBIANO(a,b,epsilon,X)
 % y es vector solución
 % err es el error final
 % it es el numero de iteraciones final
-% A matriz del sistema
+% a matriz del sistema
 % b vector del sistema
+% X vector inicial
 % epsilon es la cota del error
-n=length(b);
-it=0;
-err=2*epsilon;
-x=zeros(1,n);
-y=zeros(1,n);
-while err>epsilon
-    for i=1:n
-        S=0;
-       for j=1:n;
-       if i~=j;
-        S=S+A(i,j)*x(j);
-       end
-       end
-       y(i)=(b(i)-S)/A(i,i);
-    end
-    it=it+1;
-    err=norm(x-y,1);
-    x=y;
+norma2 = 1;
+normainf = 1;
+it = 0;
+y = [];
+errores = [];
+[tj,cj] = matricesTyCJacobi(a,b);
+while (norma2 > epsilon) & (normainf > epsilon)
+    it = it + 1;
+    Z = X; 
+    X = tj * Z + cj;
+    y(:,it) = X;
+    valor = sum((X - Z).^2);
+    norma2 = sqrt(valor);
+    normainf = abs(max(abs(X - Z)));
+    errores(:,it) = [norma2;normainf];
 end
-y
-it
-err
+
+tabla = [1:it;y]'
+error = [1:it;errores]'
+
 

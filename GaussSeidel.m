@@ -1,28 +1,27 @@
-function[tabla,it,error]=GaussSeidel(A,B,epsilon)
+function[tabla,error]=GaussSeidel(a,b,epsilon,X)
 % y es vector solución
 % err es el error final
 % it es el numero de iteraciones final
-% A matriz del sistema
+% a matriz del sistema
 % b vector del sistema
+% X vector inicial
 % epsilon es la cota del error
-n = length(B);
-X = zeros(n,1);
-err = 1;
+norma2 = 1;
+normainf = 1;
 it = 0;
-while max(err) > epsilon
+y = [];
+[tg,cg] = matricesTyCGauss(a,b);
+while (norma2 > epsilon) & (normainf > epsilon)
     it = it + 1;
-    Z = X;  
-    for i = 1:n
-        j = 1:n; 
-        j(i) = [];  
-        C = X; 
-        C(i) = []; 
-        X(i) = (B(i) - sum(A(i,j) * C)) / A(i,i);
-    end
+    Z = X; 
+    X = tg * Z + cg;
     y(:,it) = X;
-    err = sqrt((X - Z).^2);
+    valor = sum((X - Z).^2);
+    norma2 = sqrt(valor);
+    normainf = abs(max(abs(X - Z)));
+    errores(:,it) = [norma2;normainf];
 end
 
 tabla = [1:it;y]'
-it
-error = max(err)
+error =[1:it;errores]'
+
