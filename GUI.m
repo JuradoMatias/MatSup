@@ -58,10 +58,10 @@ else
 end
 
 
-function MaxItr_Callback(hObject, eventdata, handles)
+function decimales_Callback(hObject, eventdata, handles)
 
 % --- Executes during object creation, after setting all properties.
-function MaxItr_CreateFcn(hObject, eventdata, handles)
+function decimales_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -150,13 +150,13 @@ function resolver_Callback(hObject, eventdata, handles)
             return
         end
     end
-    
+    decimales = str2double(get(handles.decimales,'String'));
     Tolerancia = str2double(get(handles.tolerancia,'String'));
     switch get(get(handles.uibuttongroup1,'SelectedObject'),'Tag')
     case 'Jacobi'
-        [tabla,error] = JACOBIANO(k,f,Tolerancia,inicial);
+        [tabla,error] = JACOBIANO(k,f,Tolerancia,inicial,decimales);
     otherwise
-        [tabla,error] = GaussSeidel(k,f,Tolerancia,inicial);
+        [tabla,error] = GaussSeidel(k,f,Tolerancia,inicial,decimales);
     end
     
     set(handles.matrizK,'Data',tabla,'ColumnFormat',{'long'})
@@ -280,3 +280,15 @@ function rtdonorminf_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes when entered data in editable cell(s) in matrizK.
+function matrizK_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to matrizK (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
